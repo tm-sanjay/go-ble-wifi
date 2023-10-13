@@ -59,7 +59,7 @@ func main() {
 	// Advertise for specified durantion, or until interrupted by user.
 	ctx := ble.WithSigHandler(context.WithCancel(context.Background()))
 
-	err = ble.AdvertiseNameAndServices(ctx, "My Device")
+	err = ble.AdvertiseNameAndServices(ctx, "SS-BLE-WiFi")
 
 	switch errors.Cause(err) {
 	case nil:

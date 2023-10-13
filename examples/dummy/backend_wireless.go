@@ -38,6 +38,12 @@ func (d *DummyWirelessInterface) StartAccessPoint(ssid string, passphrase string
 	return errors.New("not supported")
 }
 
+// Test implements berrylan.WirelessInterface.Test by returning an error
+// because it is not supported.
+func (d *DummyWirelessInterface) Test(ssid string) error {
+	return errors.New("not supported")
+}
+
 // GetConnection implements berrylan.WirelessInterface.GetConnection by
 // returning dummy connection information (if connected).
 func (d *DummyWirelessInterface) GetConnection() *berrylan.ConnectionInfo {
@@ -60,13 +66,13 @@ func (d *DummyWirelessInterface) GetNetworks() []berrylan.NetworkInfo {
 	return []berrylan.NetworkInfo{
 		{
 			Ssid:           "Test Network 1",
-			MACAddress:     "00:00:00:00:00:00",
+			MACAddress:     "00:00:00:00:00:01",
 			Protected:      true,
 			SignalStrength: rand.Intn(100),
 		},
 		{
 			Ssid:           "Test Network 2",
-			MACAddress:     "00:00:00:00:00:00",
+			MACAddress:     "00:00:00:00:00:02",
 			Protected:      false,
 			SignalStrength: rand.Intn(100),
 		},
@@ -83,9 +89,9 @@ func (d *DummyWirelessInterface) ScanNetwork() {
 // connection request to a given network.
 func (d *DummyWirelessInterface) Connect(ssid string, passphrase string, hidden bool) error {
 	log.Infof(
-		"Connecting to '%s' with passpharse of length %d.",
+		"Connecting to '%s' with passpharse is '%s'",
 		ssid,
-		len(passphrase))
+		passphrase,)
 
 	d.ssid = ssid
 

@@ -5,7 +5,6 @@ github.com/basilfx/go-ble-device-information v0.0.0-20200921160719-46f83e527d78 
 github.com/basilfx/go-ble-device-information v0.0.0-20200921160719-46f83e527d78/go.mod h1:mg8rTdrwC7yU5Vjx1DvWDEFJDKKbk91D/QV6HMEu/tY=
 github.com/basilfx/go-ble-utilities v0.0.0-20200920114255-307344fe7cc5 h1:GbfX8Yp72QzZ7eIl88XvVCWGSZwipuSu+0vzfX4pIr4=
 github.com/basilfx/go-ble-utilities v0.0.0-20200920114255-307344fe7cc5/go.mod h1:1iJF5z36zfUoVpswGFO8/uoY9N0AAtZprAIzhh5kQ6c=
-github.com/basilfx/go-utilities v0.0.0-20200822225936-4a9129a790b2 h1:VyNz/wQjyErN0noh12oK9sq6FupOUT6hWgQrn97eVv0=
 github.com/basilfx/go-utilities v0.0.0-20200822225936-4a9129a790b2/go.mod h1:vZ/x0yTbdSR5IzLlHlXe2plFNZkp2lfBqPGBXqawlKs=
 github.com/basilfx/go-utilities v0.0.0-20200918230715-ada297c97de8 h1:YhukH5nC21t2DgMekoiVcKy9HrPTeAkAE0LFgESpsw4=
 github.com/basilfx/go-utilities v0.0.0-20200918230715-ada297c97de8/go.mod h1:vZ/x0yTbdSR5IzLlHlXe2plFNZkp2lfBqPGBXqawlKs=
