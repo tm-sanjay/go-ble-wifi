@@ -15,6 +15,7 @@ const (
 	WirelessCommandScan             = WirelessCommand(0x04)
 	WirelessCommandGetConnection    = WirelessCommand(0x05)
 	WirelessCommandStartAccessPoint = WirelessCommand(0x06)
+	WirelessCommandTest             = WirelessCommand(0x07)
 )
 
 // WirelessResponse enum type.

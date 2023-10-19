@@ -5,6 +5,7 @@ type ConnectionStatusUpdateHandler func(status WirelessConnectionStatus)
 
 // WirelessInterface is the interface for managing the wireless connection.
 type WirelessInterface interface {
+	Test(ssid string) error
 	StartAccessPoint(ssid string, passphrase string) error
 	GetConnection() *ConnectionInfo
 	GetNetworks() []NetworkInfo

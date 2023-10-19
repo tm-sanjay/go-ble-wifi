@@ -1,0 +1,27 @@
+official app
+!! use \n (0A) at the end of each command !!
+// Command: GetNetworks {c:0}
+INFO[0039] Incoming request: {"c":0}                    
+INFO[0039] Wireless service command 0x00.               
+INFO[0039] WirelessCommandGetNetworks                   
+INFO[0039] Outgoing response: {"c":0,"r":0,"p":[{"e":"Test Network 1","m":"00:00:00:00:00:01","s":65,"p":1,"i":""},{"e":"Test Network 2","m":"00:00:00:00:00:02","s":82,"p":0,"i":""}]} 
+// Command: GetConnection {c:5} //to get current connection
+INFO[0039] Incoming request: {"c":5}                    
+INFO[0039] Wireless service command 0x05.               
+WirelessCommandGetConnection
+INFO[0039] Outgoing response: {"c":5,"r":0,"p":null}    
+// Command: Connect {c:1, p:{e:"Test Network 1", p:"12345678"}} //to connect to a network
+INFO[0432] Incoming request: {"c":1,"p":{"e":"Test Network 1","p":"12345678"}} 
+INFO[0432] Wireless service command 0x01.               
+WirelessCommandConnect
+INFO[0432] Connecting to 'Test Network 1' with passpharse is '12345678' 
+INFO[0432] Outgoing response: {"c":1,"r":0}             
+INFO[0432] Changing network status to 'Prepare'.        
+INFO[0434] Changing network status to 'Secondaries'.    
+INFO[0436] Changing network status to 'Activated'.      
+// Command: GetConnection {c:5} //to get current connection
+INFO[0436] Incoming request: {"c":5}                    
+INFO[0436] Wireless service command 0x05.               
+WirelessCommandGetConnection
+INFO[0436] Outgoing response: {"c":5,"r":0,"p":{"e":"Test Network 1","m":"00:00:00:00:00:00","s":50,"p":1,"i":"127.0.0.1"}} 
+

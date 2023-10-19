@@ -14,6 +14,22 @@ be used with other networking applications too.
 ## Dependencies
 This library makes use of [go-ble](https://github.com/go-ble/ble). Currently,
 it only runs on Linux.
+## Steps
+Install BlueZ
+```bash
+sudo apt-get install bluez*
+```
+Activate
+```bash
+sudo modprobe btusb
+```
+
+## Server
+```bash
+sudo systemctl enable bluetooth.service
+sudo systemctl restart bluetooth.service
+sudo systemctl status bluetooth.service
+```
 
 ## Examples
 An example application is included that provides a 'dummy' implementation of

@@ -107,10 +107,11 @@ func (n *NetworkService) handleCommand(req []byte) {
 	command := spec.NetworkCommand(req[0])
 
 	// Handle command.
-	log.Debugf("Network service command 0x%02x.", command)
+	log.Infof("Network service command 0x%02x.", command)
 
 	switch command {
 	case spec.NetworkCommandEnableNetworking:
+		log.Infof("Enabling networking.")
 		err := n.networkInterface.EnableNetworking(true)
 
 		if err != nil {
@@ -122,6 +123,7 @@ func (n *NetworkService) handleCommand(req []byte) {
 
 		n.writeResponse(spec.NetworkResponseSuccess)
 	case spec.NetworkCommandDisableNetworking:
+		log.Infof("Disabling networking.")
 		err := n.networkInterface.EnableNetworking(false)
 
 		if err != nil {
@@ -133,6 +135,7 @@ func (n *NetworkService) handleCommand(req []byte) {
 
 		n.writeResponse(spec.NetworkResponseSuccess)
 	case spec.NetworkCommandEnableWireless:
+		log.Infof("Enabling wireless.")
 		err := n.networkInterface.EnableWireless(true)
 
 		if err != nil {
@@ -144,6 +147,7 @@ func (n *NetworkService) handleCommand(req []byte) {
 
 		n.writeResponse(spec.NetworkResponseSuccess)
 	case spec.NetworkCommandDisableWireless:
+		log.Infof("Disabling wireless.")
 		err := n.networkInterface.EnableWireless(false)
 
 		if err != nil {

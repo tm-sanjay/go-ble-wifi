@@ -2,6 +2,7 @@ package berrylan
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/basilfx/go-ble-berrylan/spec"
 	"github.com/basilfx/go-ble-utilities/characteristics"
@@ -86,7 +87,7 @@ func writeResponse(data interface{}) *[]byte {
 		return nil
 	}
 
-	log.Debugf("Outgoing response: %s", string(response))
+	log.Infof("Outgoing response: %s", string(response))
 
 	return &response
 }
@@ -95,7 +96,7 @@ func (w *WirelessService) handleCommand(command []byte) *[]byte {
 	// Unmarshall command.
 	var request spec.WirelessCommandMessage
 
-	log.Debugf("Incoming request: %s", string(command))
+	log.Infof("Incoming request: %s", string(command))
 
 	err := json.Unmarshal([]byte(command), &request)
 
@@ -105,10 +106,11 @@ func (w *WirelessService) handleCommand(command []byte) *[]byte {
 	}
 
 	// Handle command.
-	log.Debugf("Wireless service command 0x%02x.", request.Command)
+	log.Infof("Wireless service command 0x%02x.", request.Command)
 
 	switch request.Command {
 	case spec.WirelessCommandGetNetworks:
+		fmt.Println("WirelessCommandGetNetworks")
 		networks := w.wirelessInterface.GetNetworks()
 
 		parameters := make([]spec.WirelessResponseParameters, len(networks))
@@ -128,6 +130,7 @@ func (w *WirelessService) handleCommand(command []byte) *[]byte {
 			Parameters: parameters,
 		})
 	case spec.WirelessCommandConnect:
+		fmt.Println("WirelessCommandConnect")
 		if request.Parameters == nil {
 			log.Errorf("Missing parameters.")
 
@@ -156,6 +159,7 @@ func (w *WirelessService) handleCommand(command []byte) *[]byte {
 			Response: spec.WirelessResponseSuccess,
 		})
 	case spec.WirelessCommandConnectHidden:
+		fmt.Println("WirelessCommandConnectHidden")
 		if request.Parameters == nil {
 			log.Errorf("Missing parameters.")
 
@@ -201,7 +205,7 @@ func (w *WirelessService) handleCommand(command []byte) *[]byte {
 		})
 	case spec.WirelessCommandScan:
 		w.wirelessInterface.ScanNetwork()
-
+		fmt.Println("Scaning")
 		return writeResponse(spec.WirelessResponseMessage{
 			Command:  spec.WirelessCommandScan,
 			Response: spec.WirelessResponseSuccess,
@@ -210,7 +214,7 @@ func (w *WirelessService) handleCommand(command []byte) *[]byte {
 		var response *spec.WirelessResponseParameters
 
 		connection := w.wirelessInterface.GetConnection()
-
+		fmt.Println("WirelessCommandGetConnection")
 		if connection != nil {
 			response = &spec.WirelessResponseParameters{
 				Ssid:           connection.Ssid,
@@ -227,6 +231,7 @@ func (w *WirelessService) handleCommand(command []byte) *[]byte {
 			Parameters: response,
 		})
 	case spec.WirelessCommandStartAccessPoint:
+		fmt.Println("WirelessCommandStartAccessPoint")
 		if request.Parameters == nil {
 			log.Errorf("Missing parameters.")
 
@@ -253,6 +258,32 @@ func (w *WirelessService) handleCommand(command []byte) *[]byte {
 			Command:  spec.WirelessCommandStartAccessPoint,
 			Response: spec.WirelessResponseSuccess,
 		})
+	case spec.WirelessCommandTest:
+		fmt.Println("WirelessCommandTest")
+		if request.Parameters == nil {
+			log.Errorf("Missing parameters.")
+
+			return writeResponse(spec.WirelessResponseMessage{
+				Command:  spec.WirelessCommandTest,
+				Response: spec.WirelessResponseInvalidParameter,
+			})
+		}
+		err := w.wirelessInterface.Test(
+			request.Parameters.Ssid)
+
+		if err != nil {
+			log.Errorf("Unable to test: %v", err)
+
+		return writeResponse(spec.WirelessResponseMessage{
+			Command:  spec.WirelessCommandTest,
+			Response: spec.WirelessResponseSuccess,
+		})
+		}
+		return writeResponse(spec.WirelessResponseMessage{
+			Command:  spec.WirelessCommandTest,
+			Response: spec.WirelessResponseUnknown,
+		})
+
 	default:
 		log.Warnf(
 			"Wireless service command 0x%02x not supported.",
