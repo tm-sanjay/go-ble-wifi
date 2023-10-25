@@ -56,6 +56,7 @@ func main() {
 		log.Fatalf("Unable to add service: %v", err)
 	}
 
+	fmt.Printf("Ble service started.\n")
 	// Advertise for specified durantion, or until interrupted by user.
 	ctx := ble.WithSigHandler(context.WithCancel(context.Background()))
 

@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -105,7 +104,7 @@ func (d *WirelessInterface) GetNetworks() []berrylan.NetworkInfo {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(cells)
+	// fmt.Println(cells)
 
 	var networks []berrylan.NetworkInfo
 	for _, cell := range cells.Cells {
@@ -203,6 +202,11 @@ func parse(input string) Cells {
 
 		// check new cell value
 		if cellValues := newCellRegexp.FindStringSubmatch(line); len(cellValues) > 0 {
+			//if essid is null don't add cell
+			if cell != nil && cell.ESSID == "" {
+				continue
+			}
+
 			cells.Cells = append(cells.Cells, Cell{
 				CellNumber: cellValues[1],
 				MAC:        cellValues[2],
