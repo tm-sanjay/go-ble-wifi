@@ -104,7 +104,7 @@ func (d *WirelessInterface) GetNetworks() []berrylan.NetworkInfo {
 	if err != nil {
 		panic(err)
 	}
-	// fmt.Println(cells)
+	// log.Println(cells)
 
 	var networks []berrylan.NetworkInfo
 	for _, cell := range cells.Cells {
@@ -136,16 +136,41 @@ func (d *WirelessInterface) Connect(ssid string, passphrase string, hidden bool)
 	d.ssid = ssid
 
 	go func() {
-		d.onConnectionUpdate(berrylan.WirelessConnectionStatusPrepare)
-		time.Sleep(2 * time.Second)
-		d.onConnectionUpdate(berrylan.WirelessConnectionStatusSecondaries)
-		time.Sleep(2 * time.Second)
+		// Construct the nmcli command to connect to the Wi-Fi network.
+		connectToNetwork := func() error {
+			ifName, err := getActiveWirelessInterfaces()
+			if err != nil {
+				log.Fatalf("Failed to get active wireless interfaces: %v", err)
+				return err
+			}
 
-		d.connected = true
+			d.onConnectionUpdate(berrylan.WirelessConnectionStatusPrepare)
+			log.Infof("Active wireless interfaces: %v\n", ifName)
+			out, err := exec.Command("nmcli", "d", "wifi", "connect", ssid, "password", passphrase, "ifname", ifName[0]).CombinedOutput()
+			if err != nil {
+				log.Errorf("Error: %v\n", err)
+				log.Errorf("Output: %v\n", string(out))
+				return err
+			}
 
-		d.onConnectionUpdate(berrylan.WirelessConnectionStatusActivated)
+			if strings.Contains(string(out), "successfully activated") {
+				log.Infof("Connected to Wi-Fi network: %s\n", ssid)
+				d.connected = true
+				d.onConnectionUpdate(berrylan.WirelessConnectionStatusActivated)
+				return nil
+			}
+
+			log.Errorf("Failed to connect to the network: %v\n", string(out))
+			return errors.New("failed to connect to the network")
+		}
+
+		if err := connectToNetwork(); err != nil {
+			d.connected = false
+			d.onConnectionUpdate(berrylan.WirelessConnectionStatusFailed)
+			return
+		}
+
 	}()
-
 	return nil
 }
 
@@ -234,7 +259,6 @@ func compare(line string, wg *sync.WaitGroup, m *sync.Mutex, cell *Cell, reg *re
 		keys := reg.SubexpNames()
 
 		m.Lock()
-
 		for i := 1; i < len(keys); i++ {
 			switch keys[i] {
 			case "essid":
@@ -264,4 +288,25 @@ func compare(line string, wg *sync.WaitGroup, m *sync.Mutex, cell *Cell, reg *re
 
 		m.Unlock()
 	}
+}
+
+func getActiveWirelessInterfaces() ([]string, error) {
+	cmd := exec.Command("iw", "dev")
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+
+	var interfaces []string
+	lines := strings.Split(string(out), "\n")
+	for _, line := range lines {
+		if strings.Contains(line, "Interface") {
+			fields := strings.Fields(line)
+			if len(fields) == 2 {
+				interfaces = append(interfaces, fields[1])
+			}
+		}
+	}
+
+	return interfaces, nil
 }
